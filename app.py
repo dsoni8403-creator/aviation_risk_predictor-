@@ -1,20 +1,80 @@
-✈️ Aviation Risk Predictor
-Enter flight details:
+import streamlit as st
 
-Weather
+# Page settings
+st.set_page_config(page_title="Aviation Risk Predictor", page_icon="✈️")
 
-Good (0)
-Flight Delay
+# Title
+st.title("✈️ Aviation Risk Predictor")
 
-No (0)
-Maintenance Issue
+# Text
+st.write("Enter flight details:")
 
-No (0)
-Pilot Experience (years)
+# Inputs
+weather = st.selectbox(
+    "Weather",
+    ["Good (0)", "Bad (1)"]
+)
 
-1
+delay = st.selectbox(
+    "Flight Delay",
+    ["No (0)", "Yes (1)"]
+)
 
+maintenance = st.selectbox(
+    "Maintenance Issue",
+    ["No (0)", "Yes (1)"]
+)
 
-Aircraft Age (years)
+experience = st.number_input(
+    "Pilot Experience (years)",
+    min_value=1,
+    value=1,
+    step=1
+)
 
-1
+age = st.number_input(
+    "Aircraft Age (years)",
+    min_value=1,
+    value=1,
+    step=1
+)
+
+# Predict Button
+if st.button("Predict Risk"):
+
+    risk_score = 0
+
+    # Convert values
+    weather_val = 1 if weather == "Bad (1)" else 0
+    delay_val = 1 if delay == "Yes (1)" else 0
+    maintenance_val = 1 if maintenance == "Yes (1)" else 0
+
+    # Logic
+    if weather_val == 1:
+        risk_score += 2
+
+    if delay_val == 1:
+        risk_score += 1
+
+    if maintenance_val == 1:
+        risk_score += 3
+
+    if experience < 3:
+        risk_score += 2
+    elif experience < 7:
+        risk_score += 1
+
+    if age > 20:
+        risk_score += 2
+    elif age > 10:
+        risk_score += 1
+
+    # Result
+    st.subheader("Result")
+
+    if risk_score <= 2:
+        st.success("Low Risk ✅")
+    elif risk_score <= 5:
+        st.warning("Medium Risk ⚠️")
+    else:
+        st.error("High Risk 🚨")
